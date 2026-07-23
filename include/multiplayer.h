@@ -1,5 +1,5 @@
-#ifndef MULTIPLAYER
-#define MULTIPLAYER
+#ifndef MULTIPLAYER_H
+#define MULTIPLAYER_H
 
 #include "graphics.h"
 #include "player.h"
@@ -12,29 +12,29 @@
 
 class Multiplayer {
 public:
-	Multiplayer(Graphics& p_graphics, std::shared_ptr<Player> p_client, std::shared_ptr<Player> p_host, Hud& p_hud);
+    Multiplayer(Graphics& p_graphics, std::shared_ptr<Player> p_client, std::shared_ptr<Player> p_host, Hud& p_hud, const std::string& p_ipAddress = "127.0.0.1");
+    ~Multiplayer() = default;
 
-	~Multiplayer() = default;
+    void draw(Graphics& p_graphics);
+    void update(float p_elapsedTime);
 
-	void draw(Graphics& p_graphics);
-
-	void update(float p_elapsedTime);
+    inline bool isHost() const { return this->_isHost; }
+    bool isConnected() const;
 
 private:
-	std::shared_ptr<Player> _playerClient;
-	std::shared_ptr<Player> _playerHost;
-	Hud& _hud;
-	Ball _ball;
+    std::shared_ptr<Player> _playerClient;
+    std::shared_ptr<Player> _playerHost;
+    Hud& _hud;
+    Ball _ball;
 
-	std::unique_ptr<Host> _host;
-	std::unique_ptr<Client> _client;
+    std::unique_ptr<Host> _host;
+    std::unique_ptr<Client> _client;
+    bool _isHost;
 
-	const float COLLISION_COOLDOWN_TIME = 500.0f;
-	float _collisionTimer;
+    const float COLLISION_COOLDOWN_TIME = 200.0f;
+    float _collisionTimer;
 
-	bool checkPlayerBallCollision();
-
-	void handlePlayerBallCollision();
+    void handlePlayerBallCollision();
 };
 
-#endif
+#endif // MULTIPLAYER_H

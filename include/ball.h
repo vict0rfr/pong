@@ -41,23 +41,30 @@ public:
 
     void reverseDirectionY();
 
-    // void setPosition(int p_x, int p_y);
+    inline float getX() const { return this->_x; }
+    inline float getY() const { return this->_y; }
+    inline float getDx() const { return this->_dx; }
+    inline float getDy() const { return this->_dy; }
 
-    /**
-     * @brief Gets the x-coordinate of the ball.
-     * 
-     * @return float: The x-coordinate.
-     */
-    // inline float getX() const { return this->_x; }
+    inline void setPosition(float p_x, float p_y) {
+        this->_x = p_x;
+        this->_y = p_y;
+        this->_boundingBox = SpriteRectangle(this->_x, this->_y, this->_boundingBox.getWidth(), this->_boundingBox.getHeight());
+    }
 
-    /**
-     * @brief Gets the y-coordinate of the ball.
-     * 
-     * @return float: The y-coordinate.
-     */
-    // inline float getY() const { return this->_y; }
+    inline void setVelocity(float p_dx, float p_dy) {
+        this->_dx = p_dx;
+        this->_dy = p_dy;
+    }
 
-    // inline void setLost() { this->_hasLost = true; }
+    inline void reset(float p_x = globals::SCREEN_WIDTH / 2.0f, float p_y = globals::SCREEN_HEIGHT / 2.0f) {
+        this->_x = p_x;
+        this->_y = p_y;
+        this->_dx = globals::ballDx;
+        this->_dy = (rand() % 2 == 0) ? globals::ballDy : -globals::ballDy;
+        this->_hasLost = false;
+        this->_boundingBox = SpriteRectangle(this->_x, this->_y, this->_boundingBox.getWidth(), this->_boundingBox.getHeight());
+    }
 
     inline bool getLostStatus() const { return this->_hasLost; }
 private:

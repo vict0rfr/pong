@@ -86,8 +86,13 @@ public:
      */
     // inline float getY() const { return this->_y; }
 
+    inline float getY() const { return this->_y; }
+    inline void setY(float p_y) { 
+        this->_y = p_y; 
+        this->_boundingBox = SpriteRectangle(this->_x, this->_y, this->_boundingBox.getWidth(), this->_boundingBox.getHeight());
+    }
     inline int getPoints() const { return this->_points; }
-
+    inline void setPoints(int p_points) { this->_points = p_points; }
     inline void gainPoint() { this->_points += 1; }
 
     inline void setLost() { this->_hasLost = true; }

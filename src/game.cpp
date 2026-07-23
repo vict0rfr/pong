@@ -118,6 +118,9 @@ void Game::handleInput(Input &p_input) {
     while (SDL_PollEvent(&e)) {
         if (e.type == SDL_EVENT_KEY_DOWN) {
             p_input.keyDownEvent(e);
+            if (this->_menu == MPOPTIONCLIENT && this->_hud.getOptionIndex() == 1) {
+                this->_hud.handleKeyInput(e.key.scancode, &this->_menu);
+            }
         } else if (e.type == SDL_EVENT_KEY_UP) {
             p_input.keyUpEvent(e);
         } else if (e.type == SDL_EVENT_QUIT) {
@@ -159,7 +162,7 @@ void Game::handleInput(Input &p_input) {
         auto lambdaStartMPGameClient = [this]() {
                 this->_menu = MPGAMECLIENT;
                 this->_player = std::make_shared<Player>(this->_graphics, Vector2f(100, 100));
-                this->_multiplayer = std::make_unique<Multiplayer>(this->_graphics, this->_player, nullptr, this->_hud);
+                this->_multiplayer = std::make_unique<Multiplayer>(this->_graphics, this->_player, nullptr, this->_hud, globals::clientIpAddress);
                 this->_hud.setOptionIndex(1);
             };
 
@@ -186,12 +189,13 @@ void Game::handleInput(Input &p_input) {
         }
 
         if (p_input.wasKeyPressed(SDL_SCANCODE_RETURN)) {
+            if (this->_menu == MPOPTIONHOST && this->_hud.getOptionIndex() == 4 && this->_multiplayer == nullptr && this->_player == nullptr) lambdaStartMPGameHost();
+            if (this->_menu == MPOPTIONCLIENT && this->_hud.getOptionIndex() == 2 && this->_multiplayer == nullptr && this->_player == nullptr) lambdaStartMPGameClient();
             if (this->_menu == MPLOBBY && this->_hud.getOptionIndex() == 2 && this->_multiplayer == nullptr && this->_player == nullptr) lambdaStartMPGameHost();
-            this->_hud.handleKeyInput(SDL_SCANCODE_RETURN, &this->_menu);
-
             if (this->_menu == SPMENU && this->_hud.getOptionIndex() == 4 && this->_singleplayer == nullptr && this->_player == nullptr) lambdaStartSPGame();
             if (this->_menu == LOSE && this->_hud.getOptionIndex() == 1 && this->_singleplayer == nullptr && this->_player == nullptr) lambdaStartSPGame();
-            // if (this->_menu == MPLOBBY && this->_hud.getOptionIndex() == 2 && this->_multiplayer == nullptr && this->_player == nullptr) lambdaStartMPGameClient();
+
+            this->_hud.handleKeyInput(SDL_SCANCODE_RETURN, &this->_menu);
         }
     };
     handleMenuSelection();

@@ -4,7 +4,7 @@
 - [x] Add fullscreen toggle
 - [x] Add play again when lost (look in game.cpp delete singleplayer & delete player if statement)
 - [x] make the ball spawn randomly
-- [ ] Add multiplayer
+- [x] Add multiplayer
 - [ ] ~~Implement pause menu (when pressing esc)~~
 - [ ] ~~Change resolution settings~~ (Change the option for something better)
 - [ ] Configure Cmake/make

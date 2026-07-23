@@ -262,7 +262,7 @@ void Hud::renderMPHost() {
 void Hud::renderMPClient() {
 	this->_hudItem = {
 		{"CLIENT", Vector2f(globals::SCREEN_WIDTH / 2, globals::SCREEN_HEIGHT / 5), Dash::NODASH},
-		{"IP ADDRESS: ", Vector2f(globals::SCREEN_WIDTH / 2, globals::SCREEN_HEIGHT / 2.5), Dash::DASH},
+		{"IP ADDRESS: " + globals::clientIpAddress, Vector2f(globals::SCREEN_WIDTH / 2, globals::SCREEN_HEIGHT / 2.5), Dash::DASH},
 		{"CONNECT", Vector2f(globals::SCREEN_WIDTH / 3, globals::SCREEN_HEIGHT / 1.5), Dash::DASH},
 		{"BACK", Vector2f(globals::SCREEN_WIDTH / 1.5, globals::SCREEN_HEIGHT / 1.5), Dash::DASH}
 	};
@@ -304,6 +304,29 @@ void Hud::handleKeyInput(SDL_Scancode p_key, Menu* p_menu) {
 			this->handleSelect(p_menu);
 			break;
 		default:
+			if (p_menu != nullptr && *p_menu == MPOPTIONCLIENT && this->_selectedOptionIndex == 1) {
+				if (p_key == SDL_SCANCODE_BACKSPACE) {
+					if (!globals::clientIpAddress.empty()) {
+						globals::clientIpAddress.pop_back();
+					}
+				} else if (globals::clientIpAddress.length() < 15) {
+					char ch = '\0';
+					if (p_key >= SDL_SCANCODE_1 && p_key <= SDL_SCANCODE_9) {
+						ch = '1' + (p_key - SDL_SCANCODE_1);
+					} else if (p_key == SDL_SCANCODE_0) {
+						ch = '0';
+					} else if (p_key >= SDL_SCANCODE_KP_1 && p_key <= SDL_SCANCODE_KP_9) {
+						ch = '1' + (p_key - SDL_SCANCODE_KP_1);
+					} else if (p_key == SDL_SCANCODE_KP_0) {
+						ch = '0';
+					} else if (p_key == SDL_SCANCODE_PERIOD || p_key == SDL_SCANCODE_KP_PERIOD) {
+						ch = '.';
+					}
+					if (ch != '\0') {
+						globals::clientIpAddress += ch;
+					}
+				}
+			}
 			break;
 		}
 	} while (this->_hudItem[this->_selectedOptionIndex].dash == Dash::NODASH);
@@ -369,11 +392,8 @@ void Hud::handleSelect(Menu* p_menu){
 		}
 	} else if (*p_menu == MPOPTIONCLIENT) {
 		switch (this->_selectedOptionIndex) {
-		case 1:
-			//*p_menu = CLIENT; enter ip address 
-			break;
 		case 2:
-			*p_menu = MPLOBBY;
+			*p_menu = MPGAMECLIENT;
 			break;
 		case 3:
 			*p_menu = MPMENU;
@@ -383,20 +403,9 @@ void Hud::handleSelect(Menu* p_menu){
 			break;
 		}
 	} else if (*p_menu == MPOPTIONHOST) {
-		this->_firstVectorIndex = 0;
-		this->_secondVectorIndex = 0;
-		this->_thirdVectorIndex = 0;
 		switch (this->_selectedOptionIndex) {
-		case 1:
-			//*p_menu = CLIENT; ip address is show here
-			break;
-		case 2:
-			//*p_menu = HOST;
-			break;
-		case 3:
-			break;
 		case 4:
-			*p_menu = MPLOBBY;
+			*p_menu = MPGAMEHOST;
 			break;
 		case 5:
 			*p_menu = MPMENU;
